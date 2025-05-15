@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linocrey International Limited</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #111;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: #00f0ff;
+      text-decoration: none;
+    }
+
+    .hero {
+      height: 100vh;
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)),
+        url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .marquee {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .marquee h1 {
+      display: inline-block;
+      font-size: 2.5rem;
+      animation: scroll-left 15s linear infinite;
+      color: #fff;
+    }
+
+    @keyframes scroll-left {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .cta {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 24px;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.3s ease;
+    }
+
+    .cta:hover {
+      transform: scale(1.1);
+    }
+
+    .about {
+      padding: 80px 20px;
+      background-color: #1a1a1a;
+      text-align: center;
+    }
+
+    .about h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .about p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .form-section {
+      padding: 80px 20px;
+      background: url('https://images.unsplash.com/photo-1487014679447-9f8336841d58?auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 500px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      animation: fadeInUp 2s ease-out;
+    }
+
+    input, textarea {
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #333;
+      color: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    button {
+      background: transparent;
+      border: 2px solid #00f0ff;
+      color: #00f0ff;
+      padding: 15px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #00f0ff50;
+    }
+
+    button:hover {
+      background: #00f0ff;
+      color: black;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00f0ff, 0 0 40px #00f0ff;
+    }
+
+    .floating-icons {
+      position: fixed;
+      top: 10%;
+      left: 10px;
+      pointer-events: none;
+    }
+
+    .float-icon {
+      width: 40px;
+      margin: 10px 0;
+      animation: float 4s ease-in-out infinite;
+      opacity: 0.5;
+    }
+
+    .float-icon.delay {
+      animation-delay: 2s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .marquee h1 {
+        font-size: 1.5rem;
+      }
+
+      form {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="marquee">
+      <h1>Linocrey International Limited — Your Dream Website, Brought to Life</h1>
+    </div>
+    <a href="#form" class="cta">Start Your Project</a>
+  </header>
+
+  <!-- About Section -->
+  <section class="about">
+    <h2>About Us</h2>
+    <p>We build stunning, custom websites tailored to your vision. Whether you want a portfolio, business page, or ecommerce site — we've got you.</p>
+  </section>
+
+  <!-- Form Section -->
+  <section class="form-section" id="form">
+    <form action="https://formspree.io/f/mnndlyjr" method="POST" onsubmit="document.getElementById('successMsg').style.display='block'">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <input type="text" name="websiteType" placeholder="Website Type (e.g. blog)">
+      <textarea name="details" placeholder="Describe what you want..." required></textarea>
+      <button type="submit">Send Request</button>
+    </form>
+    <p id="successMsg" style="display:none; color: lightgreen;">✅ Your request was sent successfully!</p>
+  </section>
+
+  <!-- Floating Icons -->
+  <div class="floating-icons">
+    <img src="https://www.svgrepo.com/show/354202/code.svg" alt="icon" class="float-icon" />
+    <img src="https://www.svgrepo.com/show/354128/web-development.svg" alt="icon" class="float-icon delay" />
+  </div>
+
+</body>
+</html>
