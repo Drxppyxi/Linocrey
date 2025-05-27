@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Premier League - Custom Teams Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      text-align: center;
+      padding: 20px;
+    }
+    input {
+      margin: 5px;
+      padding: 8px;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      background-color: #2e003e;
+      color: white;
+    }
+    td img {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #submitMatch {
+      background: #007bff;
+      color: white;
+    }
+    #resetAll {
+      background: #d9534f;
+      color: white;
+    }
+    #exportCSV {
+      background: #28a745;
+      color: white;
+    }
+    @media screen and (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      th {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Premier League - Custom Team Table</h2>
+
+  <input type="text" id="teamA" placeholder="Team A Name">
+  <input type="number" id="goalsA" placeholder="Team A Goals">
+
+  <input type="text" id="teamB" placeholder="Team B Name">
+  <input type="number" id="goalsB" placeholder="Team B Goals">
+
+  <div>
+    <button id="submitMatch">Submit Match</button>
+    <button id="resetAll">Reset All</button>
+    <button id="exportCSV">Export CSV</button>
+  </div>
+
+  <table id="leagueTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Club</th>
+        <th>P</th>
+        <th>W</th>
+        <th>D</th>
+        <th>L</th>
+        <th>GF</th>
+        <th>GA</th>
+        <th>GD</th>
+        <th>Pts</th>
+        <th>Last 5</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script>
+    const teamLogos = {
+      "Julian's Team": "21.jpg",
+      "Ibra's Team": "II.jpeg"
+    };
+
+    let standings = JSON.parse(localStorage.getItem('standings')) || {};
+
+    function updateTable() {
+      const tbody = document.querySelector("#leagueTable tbody");
+      tbody.innerHTML = '';
+
+      const sorted = Object.entries(standings).map(([name, stats]) => {
+        return {
+          name,
+          ...stats,
+          GD: stats.GF - stats.GA,
+          Pts: stats.W * 3 + stats.D
+        };
+      }).sort((a, b) => b.Pts - a.Pts || b.GD - a.GD || b.GF - a.GF);
+
+      sorted.forEach((team, i) => {
+        const row = document.createElement('tr');
+        const logo = teamLogos[team.name] ? `<img src="${teamLogos[team.name]}" alt="">` : '';
+        row.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${logo}${team.name}</td>
+          <td>${team.P}</td>
+          <td>${team.W}</td>
+          <td>${team.D}</td>
+          <td>${team.L}</td>
+          <td>${team.GF}</td>
+          <td>${team.GA}</td>
+          <td>${team.GD}</td>
+          <td>${team.Pts}</td>
+          <td>${team.form.slice(-5).join(' ')}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function submitMatch() {
+      const teamA = document.getElementById('teamA').value.trim();
+      const teamB = document.getElementById('teamB').value.trim();
+      const goalsA = parseInt(document.getElementById('goalsA').value);
+      const goalsB = parseInt(document.getElementById('goalsB').value);
+
+      if (!teamA || !teamB || teamA === teamB || isNaN(goalsA) || isNaN(goalsB)) return;
+
+      [teamA, teamB].forEach(team => {
+        if (!standings[team]) standings[team] = {
+          P:0, W:0, D:0, L:0, GF:0, GA:0, form:[]
+        };
+      });
+
+      standings[teamA].P += 1;
+      standings[teamB].P += 1;
+      standings[teamA].GF += goalsA;
+      standings[teamA].GA += goalsB;
+      standings[teamB].GF += goalsB;
+      standings[teamB].GA += goalsA;
+
+      if (goalsA > goalsB) {
+        standings[teamA].W += 1;
+        standings[teamB].L += 1;
+        standings[teamA].form.push('W');
+        standings[teamB].form.push('L');
+      } else if (goalsB > goalsA) {
+        standings[teamB].W += 1;
+        standings[teamA].L += 1;
+        standings[teamB].form.push('W');
+        standings[teamA].form.push('L');
+      } else {
+        standings[teamA].D += 1;
+        standings[teamB].D += 1;
+        standings[teamA].form.push('D');
+        standings[teamB].form.push('D');
+      }
+
+      localStorage.setItem('standings', JSON.stringify(standings));
+      updateTable();
+    }
+
+    function resetAll() {
+      if (confirm("Reset all saved match data?")) {
+        standings = {};
+        localStorage.removeItem('standings');
+        updateTable();
+      }
+    }
+
+    function exportCSV() {
+      let csv = "Rank,Club,P,W,D,L,GF,GA,GD,Pts,Last 5\n";
+      const sorted = Object.entries(standings).map(([name, stats]) => {
+        return {
+          name,
+          ...stats,
+          GD: stats.GF - stats.GA,
+          Pts: stats.W * 3 + stats.D
+        };
+      }).sort((a, b) => b.Pts - a.Pts || b.GD - a.GD || b.GF - a.GF);
+
+      sorted.forEach((team, i) => {
+        csv += `${i + 1},${team.name},${team.P},${team.W},${team.D},${team.L},${team.GF},${team.GA},${team.GD},${team.Pts},"${team.form.slice(-5).join(' ')}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'league_table.csv';
+      link.click();
+    }
+
+    document.getElementById('submitMatch').addEventListener('click', submitMatch);
+    document.getElementById('resetAll').addEventListener('click', resetAll);
+    document.getElementById('exportCSV').addEventListener('click', exportCSV);
+
+    updateTable();
+  </script>
+</body>
+</html>
